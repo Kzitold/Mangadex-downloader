@@ -34,7 +34,7 @@ $max = (Get-Content $pages).count
 
 echo " "
 Get-Variable chap
-Get-Variable mnum
+echo ($mnum+1)"/$mmax"
 echo " "
 
 $start = {
