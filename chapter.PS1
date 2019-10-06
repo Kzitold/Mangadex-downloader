@@ -5,8 +5,8 @@ $client = new-object System.Net.WebClient
 $md = "https://mangadex.org"
 #$chap = ....
 
-#$output = "$path\$chap"
 $output = "$path\$manga\$chap"
+#$output = "$path\$chap"
 
 New-Item $manga\$chap -type directory -Force | Out-Null
 
