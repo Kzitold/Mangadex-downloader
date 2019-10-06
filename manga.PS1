@@ -3,7 +3,7 @@ cd $path
 $client = new-object System.Net.WebClient
 
 $md = "https://mangadex.org"
-$manga = 32834
+$manga = .....
 
 New-Item $manga -type directory -Force | Out-Null
 $client.DownloadFile("$md/api/manga/$manga","$path\manga.json")
