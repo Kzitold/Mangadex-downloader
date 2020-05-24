@@ -7,6 +7,7 @@ $md = "https://mangadex.org"
 #$chap = "...."
 #$manga = "test"
 
+If(!(test-path $path\$manga)){New-Item $path\$manga -type directory -Force | Out-Null}
 
 #---------
 $api = "$path\api.txt"
@@ -26,6 +27,7 @@ $server = ((Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "")
 
 $skip = (Select-String $api -pattern "page_array" | Select-Object -ExpandProperty LineNumber)
 $end = ((Select-String $api -pattern "\]" | Select-Object -ExpandProperty LineNumber)-$skip)
+
 #Get-Content $api | select -first $end -skip ($skip-1)
 
 $pages = "$path\pages.txt"
@@ -39,8 +41,8 @@ Get-Variable chap
 Get-Variable mnum
 echo " "
 
-New-Item $manga\$tit -type directory -Force | Out-Null
 $output = "$path\$manga\$tit"
+New-Item $output -type directory -Force | Out-Null
 
 $start = {
 
@@ -49,7 +51,7 @@ $client.DownloadFile("$server$hash/$png","$output\$png")
 
 echo "$server$hash/$png"
 
-$num = $num+1
+$num = ([int]$num+1)
 
 if ($num -eq $max) {
 exit}
