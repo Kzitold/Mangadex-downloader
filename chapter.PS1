@@ -25,16 +25,16 @@ $client.DownloadFile("$md/api/chapter/$chap","$cson")
 
 (Get-Content $cson).Split(",") > $api
 
-$skip = (Select-String $api -pattern "hash" | Select-Object -ExpandProperty LineNumber)
+$skip = (Select-String $api -pattern "`"hash`":" | Select-Object -ExpandProperty LineNumber)
 $hash = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("hash:", "")
 
-$skip = (Select-String $api -pattern "chapter" | Select-Object -ExpandProperty LineNumber)
+$skip = (Select-String $api -pattern "`"chapter`":" | Select-Object -ExpandProperty LineNumber)
 $tit = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("chapter:", "")
 
-$skip = (Select-String $api -pattern "server" | Select-Object -ExpandProperty LineNumber)
+$skip = (Select-String $api -pattern "`"server`":" | Select-Object -ExpandProperty LineNumber)
 $server = ((Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("server:", "").replace("\", ""))
 
-$skip = (Select-String $api -pattern "page_array" | Select-Object -ExpandProperty LineNumber)
+$skip = (Select-String $api -pattern "`"page_array`":" | Select-Object -ExpandProperty LineNumber)
 $end = ((Select-String $api -pattern "\]" | Select-Object -ExpandProperty LineNumber)-$skip)
 
 #Get-Content $api | select -first $end -skip ($skip-1)
