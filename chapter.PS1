@@ -5,8 +5,8 @@ $client = new-object System.Net.WebClient
 $md = "https://mangadex.org"
 
 #$chap = "...."
-#$manga = "test"
 
+if (!$manga) {$manga = "manga"}
 If(!(test-path $path\$manga)){New-Item $path\$manga -type directory -Force | Out-Null}
 
 #---------
@@ -30,6 +30,7 @@ $end = ((Select-String $api -pattern "\]" | Select-Object -ExpandProperty LineNu
 
 #Get-Content $api | select -first $end -skip ($skip-1)
 
+
 $pages = "$path\pages.txt"
 (Get-Content $api | select -first ($end+1) -skip ($skip-1)).replace('"', "").replace("page_array:[", "").replace("]", "") > $pages
 
@@ -38,7 +39,7 @@ $max = (Get-Content $pages).count
 
 echo " "
 Get-Variable chap
-Get-Variable mnum
+if ($mnum) {Get-Variable mnum}
 echo " "
 
 $output = "$path\$manga\$tit"
