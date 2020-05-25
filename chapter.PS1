@@ -10,8 +10,16 @@ if (!$manga) {$manga = "manga"}
 If(!(test-path $path\$manga)){New-Item $path\$manga -type directory -Force | Out-Null}
 
 #---------
+$temp = "$path\temp"
 $api = "$temp\api.txt"
 $cson = "$temp\chap.json"
+If(!(test-path $temp)){New-Item $temp -type directory -Force | Out-Null}
+
+$wait = {$set = 5
+If ((([int]$sec+$set) -gt 59) -AND ((get-date).Second -lt $set)){
+$sec = $sec-(60-$set)}
+If ($sec+$set -lt (get-date).Second){
+} Else{&$wait}}
 
 $client.DownloadFile("$md/api/chapter/$chap","$cson")
 
@@ -48,6 +56,8 @@ New-Item $output -type directory -Force | Out-Null
 
 $start = {
 
+$sec = (get-date).Second
+
 $png = (Get-Content $pages | select -first 1 -skip $num)
 $client.DownloadFile("$server$hash/$png","$output\$png")
 
@@ -58,6 +68,7 @@ $num = ([int]$num+1)
 if ($num -eq $max) {
 exit}
 
+&$wait
 &$start
 }
 &$start
