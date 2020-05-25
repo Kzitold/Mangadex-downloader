@@ -11,6 +11,7 @@ $lang = "gb"
 $md = "https://mangadex.org"
 
 $temp = "$path\temp"
+If (!$manga) {$manga = (Read-Host `$manga = )}
 New-Item $temp -type directory -Force | Out-Null
 New-Item $path\$manga -type directory -Force | Out-Null
 $json = "$temp\manga.json"
