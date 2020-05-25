@@ -24,9 +24,6 @@ If ($tit -eq ""){
 echo "done"
 } Else{
 $tit | Invoke-Expression
-If ($chap){
-& $path\chapter.PS1
-exit}
 .$prompt}}
 
 If ($list -eq "true"){
