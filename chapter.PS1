@@ -10,11 +10,12 @@ if (!$manga) {$manga = "manga"}
 If(!(test-path $path\$manga)){New-Item $path\$manga -type directory -Force | Out-Null}
 
 #---------
-$api = "$path\api.txt"
+$api = "$temp\api.txt"
+$cson = "$temp\chap.json"
 
-$client.DownloadFile("$md/api/chapter/$chap","$path\chap.json")
+$client.DownloadFile("$md/api/chapter/$chap","$cson")
 
-(Get-Content $path\chap.json).Split(",") > $api
+(Get-Content $cson).Split(",") > $api
 
 $skip = (Select-String $api -pattern "hash" | Select-Object -ExpandProperty LineNumber)
 $hash = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("hash:", "")
@@ -31,7 +32,7 @@ $end = ((Select-String $api -pattern "\]" | Select-Object -ExpandProperty LineNu
 #Get-Content $api | select -first $end -skip ($skip-1)
 
 
-$pages = "$path\pages.txt"
+$pages = "$temp\pages.txt"
 (Get-Content $api | select -first ($end+1) -skip ($skip-1)).replace('"', "").replace("page_array:[", "").replace("]", "") > $pages
 
 $num = 0
