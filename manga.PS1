@@ -2,62 +2,55 @@ $path = split-path -parent $MyInvocation.MyCommand.Definition
 cd $path
 $client = new-object System.Net.WebClient
 
+#$manga = "...."
+
+#$mnum = "...."
+#$max = "...."
+
+$lang = "gb"
 $md = "https://mangadex.org"
 
-#$chap = "...."
+$temp = "$path\temp"
+New-Item $temp -type directory -Force | Out-Null
+New-Item $path\$manga -type directory -Force | Out-Null
+$json = "$temp\manga.json"
+$client.DownloadFile("$md/api/manga/$manga","$json")
+$cp = "$temp\chapters.txt"
+(((Get-Content $json).split("}")).replace('"chapter":{', '') | Select-String -pattern "`"lang_code`":`"$lang`"")| Set-Content $cp
 
-if (!$manga) {$manga = "manga"}
-If(!(test-path $path\$manga)){New-Item $path\$manga -type directory -Force | Out-Null}
+If (!$max){$max = (Get-Content $cp).count}
+If (!$mnum){$mnum = "1"}
 
-#---------
-$api = "$temp\api.txt"
-$cson = "$temp\chap.json"
+$prompt = {
+$tit = (Read-Host)
+If ($tit -eq ""){
+echo "done"
+} Else{
+$tit | Invoke-Expression
+.$prompt}}
 
-$client.DownloadFile("$md/api/chapter/$chap","$cson")
+If ($list -eq "true"){
+$list = Get-Content -Path $cp
+[array]::Reverse($list)
+$index = 0
+$list | Foreach{$index++;echo `r`n;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
+echo `r`n
+.$prompt
+}
 
-(Get-Content $cson).Split(",") > $api
+Get-Variable max
 
-$skip = (Select-String $api -pattern "hash" | Select-Object -ExpandProperty LineNumber)
-$hash = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("hash:", "")
-
-$skip = (Select-String $api -pattern "chapter" | Select-Object -ExpandProperty LineNumber)
-$tit = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("chapter:", "")
-
-$skip = (Select-String $api -pattern "server" | Select-Object -ExpandProperty LineNumber)
-$server = ((Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("server:", "").replace("\", ""))
-
-$skip = (Select-String $api -pattern "page_array" | Select-Object -ExpandProperty LineNumber)
-$end = ((Select-String $api -pattern "\]" | Select-Object -ExpandProperty LineNumber)-$skip)
-
-#Get-Content $api | select -first $end -skip ($skip-1)
+$mnum = $mnum - 1
+$mstart = {
+$chap = (Get-Content $cp | select -last 1 -skip $mnum).split("""") | select -first 1 -skip 1
 
 
-$pages = "$temp\pages.txt"
-(Get-Content $api | select -first ($end+1) -skip ($skip-1)).replace('"', "").replace("page_array:[", "").replace("]", "") > $pages
+& $path\chapter.PS1
+$mnum = ([int]$mnum+1)
 
-$num = 0
-$max = (Get-Content $pages).count
-
-echo " "
-Get-Variable chap
-if ($mnum) {Get-Variable mnum}
-echo " "
-
-$output = "$path\$manga\$tit"
-New-Item $output -type directory -Force | Out-Null
-
-$start = {
-
-$png = (Get-Content $pages | select -first 1 -skip $num)
-$client.DownloadFile("$server$hash/$png","$output\$png")
-
-echo "$server$hash/$png"
-
-$num = ([int]$num+1)
-
-if ($num -eq $max) {
+if ($mnum -eq $max) {
 exit}
 
-&$start
+&$mstart
 }
-&$start
+&$mstart
