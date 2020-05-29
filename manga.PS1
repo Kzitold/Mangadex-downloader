@@ -22,16 +22,7 @@ $cp = "$temp\chapters.txt"
 If (!$max){$max = (Get-Content $cp).count}
 If (!$mnum){$mnum = "1"}
 
-$prompt = {
-$tit = (Read-Host)
-If ($tit -eq ""){
-echo "done"
-} Else{
-$tit | Invoke-Expression
-.$prompt}}
-
-If ($list -eq "true"){
-$list = Get-Content -Path $cp
+If ($list -eq "true"){$list = Get-Content -Path $cp
 [array]::Reverse($list)
 $index = 0
 $list | Foreach{$index++;echo `r`n;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
@@ -40,7 +31,6 @@ echo `r`n
 }
 
 Get-Variable max
-
 $mnum = $mnum - 1
 $mstart = {
 $chap = (Get-Content $cp | select -last 1 -skip $mnum).split("""") | select -first 1 -skip 1
