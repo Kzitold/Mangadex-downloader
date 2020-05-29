@@ -15,12 +15,6 @@ $api = "$temp\api.txt"
 $cson = "$temp\chap.json"
 If(!(test-path $temp)){New-Item $temp -type directory -Force | Out-Null}
 
-$wait = {$set = 5
-If ((([int]$sec+$set) -gt 59) -AND ((get-date).Second -lt $set)){
-$sec = $sec-(60-$set)}
-If ($sec+$set -lt (get-date).Second){
-} Else{&$wait}}
-
 $client.DownloadFile("$md/api/chapter/$chap","$cson")
 
 (Get-Content $cson).Split(",") > $api
@@ -28,8 +22,11 @@ $client.DownloadFile("$md/api/chapter/$chap","$cson")
 $skip = (Select-String $api -pattern "`"hash`":" | Select-Object -ExpandProperty LineNumber)
 $hash = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("hash:", "")
 
+$skip = (Select-String $api -pattern "`"volume`":" | Select-Object -ExpandProperty LineNumber)
+$tit = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("volume:", "Vol")
+
 $skip = (Select-String $api -pattern "`"chapter`":" | Select-Object -ExpandProperty LineNumber)
-$tit = (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("chapter:", "")
+$tit += (Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("chapter:", "Ch")
 
 $skip = (Select-String $api -pattern "`"server`":" | Select-Object -ExpandProperty LineNumber)
 $server = ((Get-Content $api | select -first 1 -skip ($skip-1)).replace('"', "").replace("server:", "").replace("\", ""))
@@ -56,8 +53,6 @@ New-Item $output -type directory -Force | Out-Null
 
 $start = {
 
-$sec = (get-date).Second
-
 $png = (Get-Content $pages | select -first 1 -skip $num)
 $client.DownloadFile("$server$hash/$png","$output\$png")
 
@@ -68,7 +63,7 @@ $num = ([int]$num+1)
 if ($num -eq $max) {
 exit}
 
-&$wait
+start-sleep -seconds 3
 &$start
 }
 &$start
