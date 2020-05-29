@@ -47,7 +47,8 @@ $index = 0
 $output = $null
 
 $sk = ((Get-Content $temp\manga.json).replace("`":`"","`":`"`r`n").split("`r`n") | Select-String -Pattern "`"description`":") | select -ExpandProperty LineNumber
-$description = (((Get-Content $temp\manga.json).replace("`":`"","`":`"`r`n").split("`r`n") | select -first 1 -skip $sk)).split("`",`"") | select -first 1
+If (!($PSEdition -eq "Core")){$sk++}
+$description = (((Get-Content $temp\manga.json).replace("`":`"","`":`"`r`n").split("`r`n") | select -first 1 -skip $sk)).replace("`",`"","`r`n").split("`r`n") | select -first 1
 $edit = $description.replace("\r\n","`r`n").replace(".",".`r`n").replace("?","?`r`n").replace("?","?`r`n")
 
 $cp = "$temp\chapters.txt"
@@ -59,7 +60,7 @@ $sk = $edit.split("`r`n") | Select-String -SimpleMatch "[spoiler]" |select -Firs
 Clear-Host
 
 if($sk -gt 0){
-$edit.split("`r`n") | select -First ($sk - 2)
+$edit.split("`r`n") | select -First ($sk - 1)
 }Else {$edit.split("`r`n")}
 Write-host "`r`n"
 Write-host -NoNewline "Tags:" ($gen.replace("[","").replace("]","").split(",") | foreach {((get-content $path\tags.txt)[($_ - 1)]) + ","})
