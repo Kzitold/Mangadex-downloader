@@ -19,6 +19,14 @@ $client.DownloadFile("$md/api/manga/$manga","$json")
 $cp = "$temp\chapters.txt"
 (((Get-Content $json).split("}")).replace('"chapter":{', '') | Select-String -pattern "`"lang_code`":`"$lang`"")| Set-Content $cp
 
+$prompt = {If ($list -eq "true"){$list = Get-Content -Path $cp
+$tit = (Read-Host)
+If ($tit -eq ""){
+echo "done"
+} Else{
+$tit | Invoke-Expression
+.$prompt}}
+
 If (!$max){$max = (Get-Content $cp).count}
 If (!$mnum){$mnum = "1"}
 
