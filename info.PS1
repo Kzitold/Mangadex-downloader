@@ -63,7 +63,7 @@ if($sk -gt 0){
 $edit.split("`r`n") | select -First ($sk - 1)
 }Else {$edit.split("`r`n")}
 Write-host "`r`n"
-Write-host -NoNewline "Tags:" ($gen.replace("[","").replace("]","").split(",") | foreach {((get-content $path\tags.txt)[($_ - 1)]) + ","})
+Write-host -NoNewline "Tags:" ($gen.replace("[","").replace("]","").split(",") | foreach {If ($_ -gt 0){((get-content $path\tags.txt)[($_ - 1)]) + ","}})
 Write-host "`r`n"
 Write-host "Chapters:"(Get-Content $cp).count
 pause
