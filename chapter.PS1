@@ -53,12 +53,14 @@ New-Item $output -type directory -Force | Out-Null
 
 $start = {
 
+$host.UI.RawUI.WindowTitle = "$manga Chap:$mnum/$mmax Page:$num/$max"
+
 $png = (Get-Content $pages | select -first 1 -skip $num)
 $client.DownloadFile("$server$hash/$png","$output\$png")
 
 echo "$server$hash/$png"
-
-$num = ([int]$num+1)
+$num++
+$host.UI.RawUI.WindowTitle = "$manga Chap:$mnum/$mmax Page:$num/$max"
 
 if ($num -eq $max) {
 exit}
