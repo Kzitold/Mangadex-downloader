@@ -5,7 +5,7 @@ $client = new-object System.Net.WebClient
 #$manga = "...."
 
 #$mnum = "...."
-#$max = "...."
+#$mmax = "...."
 
 $lang = "gb"
 $md = "https://mangadex.org"
@@ -25,10 +25,10 @@ If ($tit -eq ""){
 echo "done"
 } Else{
 $tit | Invoke-Expression
-.$prompt}}
+.$prompt}}}
 
-If (!$max){$max = (Get-Content $cp).count}
-If (!$mnum){$mnum = "1"}
+If (!$mmax){$mmax = (Get-Content $cp).count}
+If (!$mnum){$mnum = 1}
 
 If ($list -eq "true"){$list = Get-Content -Path $cp
 [array]::Reverse($list)
@@ -38,16 +38,15 @@ echo `r`n
 .$prompt
 }
 
-Get-Variable max
-$mnum = $mnum - 1
+$mnum--
 $mstart = {
 $chap = (Get-Content $cp | select -last 1 -skip $mnum).split("""") | select -first 1 -skip 1
 
 
 & $path\chapter.PS1
-$mnum = ([int]$mnum+1)
+$mnum++
 
-if ($mnum -eq $max) {
+if ($mnum -eq $mmax) {
 exit}
 
 &$mstart
