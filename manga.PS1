@@ -25,7 +25,6 @@ $list = Get-Content -Path $cp
 $index = 0
 $list | Foreach{$index++;(Write-output $index":::`"Chapter_ID`":")+(($_.Split(",") | select -First 3 -skip 1) -join ",")} > $path\list.txt
 Get-Content $path\list.txt
-echo `r`n
 $inpt = {
 $tit = (Read-Host)
 If (!!$tit){
