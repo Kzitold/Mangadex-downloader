@@ -19,24 +19,24 @@ $client.DownloadFile("$md/api/manga/$manga","$json")
 $cp = "$temp\chapters.txt"
 (((Get-Content $json).split("}")).replace('"chapter":{', '') | Select-String -pattern "`"lang_code`":`"$lang`"")| Set-Content $cp
 
-$prompt = {If ($list -eq "true"){$list = Get-Content -Path $cp
+If ($list -eq "true"){
+$list = Get-Content -Path $cp
+[array]::Reverse($list)
+$index = 0
+$list | Foreach{$index++;echo `r;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
+echo `r`n
 $tit = (Read-Host)
-If ($tit -eq ""){
-echo "done"
-} Else{
+If (!!$tit){
 $tit | Invoke-Expression
-.$prompt}}}
+}}
+
+If (!!$chap){
+& $path\chapter.PS1
+exit
+}
 
 If (!$mmax){$mmax = (Get-Content $cp).count}
 If (!$mnum){$mnum = 1}
-
-If ($list -eq "true"){$list = Get-Content -Path $cp
-[array]::Reverse($list)
-$index = 0
-$list | Foreach{$index++;echo `r`n;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
-echo `r`n
-.$prompt
-}
 
 $mnum--
 $mstart = {
