@@ -23,7 +23,8 @@ If ($list -eq "true"){
 $list = Get-Content -Path $cp
 [array]::Reverse($list)
 $index = 0
-$list | Foreach{$index++;echo `r;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
+$list | Foreach{$index++;(Write-output $index":::`"Chapter_ID`":")+(($_.Split(",") | select -First 3 -skip 1) -join ",")} > $path\list.txt
+Get-Content $path\list.txt
 echo `r`n
 $inpt = {
 $tit = (Read-Host)
