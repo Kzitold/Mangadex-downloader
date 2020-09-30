@@ -25,10 +25,13 @@ $list = Get-Content -Path $cp
 $index = 0
 $list | Foreach{$index++;echo `r;Write-Host -NoNewline $index":::`"Chapter_ID`":";$_.Split(",") | select -First 3 -skip 1 | foreach {Write-Host -NoNewline $_","}}
 echo `r`n
+$inpt = {
 $tit = (Read-Host)
 If (!!$tit){
 $tit | Invoke-Expression
-}}
+.$inpt}}
+.$inpt
+}
 
 If (!!$chap){
 & $path\chapter.PS1
