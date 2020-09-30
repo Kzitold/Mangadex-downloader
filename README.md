@@ -8,7 +8,7 @@ manga.PS1
 * $manga = Title ID
 * (optional)$mnum = Beginning
 * (optional)$mmax = End
-* $list = Lists chapters if set to "true"
+* $list = Lists chapters if set to "true" (Screenshot.png for how to use it.)
 
 chapter.PS1
 * $chap = Chapter ID
