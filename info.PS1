@@ -9,12 +9,12 @@ $md = "https://mangadex.org"
 
 $temp = "$path\tp"
 If (!$manga) {$manga = (Read-Host `$manga = )
+}
 New-Item $temp -type directory -Force | Out-Null
 $json = "$temp\manga.json"
 $client.DownloadFile("$md/api/manga/$manga","$json")
 $cp = "$temp\chapters.txt"
 (((Get-Content $json).split("}")).replace('"chapter":{', '') | Select-String -pattern "`"lang_code`":`"$lang`"")| Set-Content $cp
-}
 
 $brack = {
 Do {
@@ -57,7 +57,7 @@ $cp = "$temp\chapters.txt"
 $gen = ($output.split("`r`n") | Select-String -Pattern "`"genres`":" | select -ExpandProperty Line).split(":") | select -last 1
 $sk = $edit.split("`r`n") | Select-String -SimpleMatch "[spoiler]" |select -First 1 -ExpandProperty LineNumber
 
-Clear-Host
+#Clear-Host
 
 if($sk -gt 0){
 $edit.split("`r`n") | select -First ($sk - 1)
