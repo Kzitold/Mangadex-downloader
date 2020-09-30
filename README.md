@@ -6,9 +6,9 @@ The info.PS1 shows description, tags, and number of chapters. The tags.txt is ne
 
 manga.PS1
 * $manga = Title ID
-* $mnum = Beginning
-* $max = End
-* .... $list = Lists chapters if set to "true"
+* (optional)$mnum = Beginning
+* (optional)$max = End
+* $list = Lists chapters if set to "true"
 
 chapter.PS1
 * $chap = Chapter ID
